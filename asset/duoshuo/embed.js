@@ -169,36 +169,86 @@
                 warn: function() {}
             }
         }(e.console), S = e.DUOSHUO = {
-            sourceName: {
+            // sourceName: {
+            //     weibo: "新浪微博",
+            //     qq: "QQ",
+            //     qzone: "QQ空间",
+            //     qqt: "腾讯微博",
+            //     renren: "人人网",
+            //     douban: "豆瓣网",
+            //     kaixin: "开心网",
+            //     sohu: "搜狐微博",
+            //     baidu: "百度",
+            //     google: "谷歌",
+            //     wechat: "微信",
+            //     weixin: "微信",
+            //     facebook: "Facebook",
+            //     twitter: "Twitter",
+            //     linkedin: "Linkedin"
+            // },
+            // serviceNames: {
+            //     weibo: "微博",
+            //     qq: "QQ",
+            //     douban: "豆瓣",
+            //     renren: "人人",
+            //     kaixin: "开心",
+            //     baidu: "百度",
+            //     google: "谷歌",
+            //     wechat: "微信",
+            //     weixin: "微信",
+            //     facebook: "Facebook",
+            //     twitter: "Twitter",
+            //     linkedin: "Linkedin"
+            // },
+            sourceName : {
                 weibo: "新浪微博",
                 qq: "QQ",
                 qzone: "QQ空间",
                 qqt: "腾讯微博",
                 renren: "人人网",
                 douban: "豆瓣网",
+                netease: "网易微博",
                 kaixin: "开心网",
                 sohu: "搜狐微博",
                 baidu: "百度",
+                taobao: "淘宝",
+                msn: "MSN",
                 google: "谷歌",
                 wechat: "微信",
-                weixin: "微信",
+                diandian: "点点网",
+                duitang: "堆糖",
+                youdao: "有道云笔记",
+                pengyou: "朋友网",
                 facebook: "Facebook",
                 twitter: "Twitter",
-                linkedin: "Linkedin"
+                linkedin: "Linkedin",
+                huaban: "花瓣网",
+                mogujie: "蘑菇街",
+                meilishuo: "美丽说"
             },
-            serviceNames: {
+            serviceNames : {
                 weibo: "微博",
                 qq: "QQ",
                 douban: "豆瓣",
                 renren: "人人",
+                netease: "网易",
                 kaixin: "开心",
+                sohu: "搜狐",
                 baidu: "百度",
+                taobao: "淘宝",
+                msn: "MSN",
                 google: "谷歌",
                 wechat: "微信",
-                weixin: "微信",
+                diandian: "点点",
+                duitang: "堆糖",
+                youdao: "有道云笔记",
+                pengyou: "朋友网",
                 facebook: "Facebook",
                 twitter: "Twitter",
-                linkedin: "Linkedin"
+                linkedin: "Linkedin",
+                huaban: "花瓣网",
+                mogujie: "蘑菇街",
+                meilishuo: "美丽说"
             },
             parseDate: function(e) {
                 return e.parse("2011-10-28T00:00:00+08:00") && function(t) {
