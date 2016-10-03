@@ -215,6 +215,7 @@
                 msn: "MSN",
                 google: "谷歌",
                 wechat: "微信",
+                weixin: "微信",
                 diandian: "点点网",
                 duitang: "堆糖",
                 youdao: "有道云笔记",
@@ -232,7 +233,6 @@
                 qqt: "腾讯微博",
                 sohu: "搜狐微博",
                 //old
-                wechat: "微信",
                 weibo: "微博",
                 qq: "QQ",
                 douban: "豆瓣",
@@ -245,6 +245,7 @@
                 msn: "MSN",
                 google: "谷歌",
                 wechat: "微信",
+                weixin: "微信",
                 diandian: "点点",
                 duitang: "堆糖",
                 youdao: "有道云笔记",
