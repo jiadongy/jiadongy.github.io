@@ -440,14 +440,17 @@ ds.charset = 'UTF-8';
 //todo load from STATIC_LOCAL if load fail form STATIC_LOCAL
 ds.onload = ds.onreadystatechange = function(t, a) {
    var o = a || !ds.readyState || /loaded|complete/.test(ds.readyState);
-   o && ds.onload = ds.onreadystatechange = null
-   //todo load from remote STATIC_LOCAL
-   var ds = document.createElement('script');
-   ds.type = 'text/javascript';ds.async = true;
-   ds.src = './asset/duoshuo/embed.js';//todo add new
-   ds.charset = 'UTF-8';
-   (document.getElementsByTagName('head')[0]
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
+   if(o){
+     ds.onload = ds.onreadystatechange = null;
+   }else {
+     //todo load from remote STATIC_LOCAL
+     var ds = document.createElement('script');
+     ds.type = 'text/javascript';ds.async = true;
+     ds.src = './asset/duoshuo/embed.js';//todo add new
+     ds.charset = 'UTF-8';
+     (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+  }
 }
 
 </script>
