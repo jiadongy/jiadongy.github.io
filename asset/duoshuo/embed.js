@@ -227,6 +227,12 @@
                 meilishuo: "美丽说"
             },
             serviceNames : {
+                //new add
+                qzone: "QQ空间",
+                qqt: "腾讯微博",
+                sohu: "搜狐微博",
+                //old
+                wechat: "微信",
                 weibo: "微博",
                 qq: "QQ",
                 douban: "豆瓣",
