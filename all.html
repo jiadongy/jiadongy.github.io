@@ -441,22 +441,23 @@ Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
 <script type="text/javascript">
 var duoshuoQuery = {short_name:'jiadongy'};
   (function() {
-    try {
       var ds = document.createElement('script');
       ds.type = 'text/javascript';ds.async = true;
       ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
       ds.charset = 'UTF-8';
+
+      ds.onerror = function(){
+        //todo load from STATIC_LOCAL if load fail form STATIC_URL
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = './asset/duoshuo/embed.js';//todo add new
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      }
+
       (document.getElementsByTagName('head')[0]
        || document.getElementsByTagName('body')[0]).appendChild(ds);
-   }catch(e){
-     //todo load from STATIC_LOCAL if load fail form STATIC_URL
-     var ds = document.createElement('script');
-     ds.type = 'text/javascript';ds.async = true;
-     ds.src = './asset/duoshuo/embed.js';//todo add new
-     ds.charset = 'UTF-8';
-     (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-   }
   })();
   </script>
 
