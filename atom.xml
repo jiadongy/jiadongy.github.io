@@ -4,7 +4,7 @@
   <title><![CDATA[J'Collection]]></title>
   <link href="https://jiadongy.github.io/atom.xml" rel="self"/>
   <link href="https://jiadongy.github.io/"/>
-  <updated>2016-10-08T19:10:14+08:00</updated>
+  <updated>2016-10-08T20:29:07+08:00</updated>
   <id>https://jiadongy.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -78,6 +78,14 @@
 </ul></li>
 </ul></li>
 <li>猜想执行结果: 由于类初始化之后类实例化,所以A类初始化需要B实例化,B实例化又需要A初始化,造成循环依赖,最终结果为死锁</li>
+<li>打点位置: 
+
+<ol>
+<li>类加载结束点</li>
+<li>类初始化开始点/结束点</li>
+<li>实例初始化开始点/结束点</li>
+<li>构造函数结束点</li>
+</ol></li>
 </ul>
 
 <h3 id="toc_2">执行结果分析</h3>
@@ -276,6 +284,8 @@ class Main2 {
     <updated>2016-10-03T00:05:14+08:00</updated>
     <id>https://jiadongy.github.io/about.html</id>
     <content type="html"><![CDATA[
+<p>Jiadongy <br/>
+with Code Farming</p>
 
 ]]></content>
   </entry>

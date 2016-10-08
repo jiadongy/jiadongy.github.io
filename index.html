@@ -163,6 +163,14 @@
 </ul></li>
 </ul></li>
 <li>猜想执行结果: 由于类初始化之后类实例化,所以A类初始化需要B实例化,B实例化又需要A初始化,造成循环依赖,最终结果为死锁</li>
+<li>打点位置: 
+
+<ol>
+<li>类加载结束点</li>
+<li>类初始化开始点/结束点</li>
+<li>实例初始化开始点/结束点</li>
+<li>构造函数结束点</li>
+</ol></li>
 </ul>
 
 <h3 id="toc_2">执行结果分析</h3>
@@ -383,7 +391,9 @@ class Main2 {
                       
                       <div class="a-content-text">
                         
-                        	
+                        	<p>Jiadongy <br/>
+with Code Farming</p>
+
                         
                       </div>
                   </div>
