@@ -13,6 +13,252 @@
   <generator uri="http://www.mweb.im/">MWeb</generator>
   
   <entry>
+    <title type="html"><![CDATA[类的循环初始化是否会引起死锁?]]></title>
+    <link href="https://jiadongy.github.io/14759239353726.html"/>
+    <updated>2016-10-08T18:52:15+08:00</updated>
+    <id>https://jiadongy.github.io/14759239353726.html</id>
+    <content type="html"><![CDATA[
+<ul>
+<li>
+<a href="#toc_0">场景设计和推测</a>
+</li>
+<li>
+<a href="#toc_1">场景</a>
+<ul>
+<li>
+<a href="#toc_2">执行结果分析</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_3">总结</a>
+</li>
+<li>
+<a href="#toc_4">Reference</a>
+<ul>
+<li>
+<a href="#toc_5">场景3代码</a>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2 id="toc_0">场景设计和推测</h2>
+
+<ul>
+<li>情况:
+
+<ol>
+<li>在类A中的初始化中实例化B</li>
+<li>在类B的初始化中实例化A</li>
+</ol></li>
+<li>猜测:死锁</li>
+</ul>
+
+<h2 id="toc_1">场景</h2>
+
+<ul>
+<li>类设计
+
+<ul>
+<li>A类: 静态变量<code>a=new B()</code>;静态变量<code>a1=1</code>(之后在静态初始化块里赋值为2);实例变量<code>a2=11</code>(之后再初始化块中赋值为12);构造函数;</li>
+<li>B类: 静态变量<code>b=new A()</code>;静态变量<code>b1=3</code>(之后在静态初始化块里赋值为4);实例变量<code>b2=21</code>(之后再初始化块中赋值为22);构造函数;</li>
+</ul></li>
+<li>猜想执行结果: 由于类初始化之后类实例化,所以A类初始化需要B实例化,B实例化又需要A初始化,造成循环依赖,最终结果为死锁</li>
+<li>实际执行结果: 无死锁 </li>
+</ul>
+
+<h3 id="toc_2">执行结果分析</h3>
+
+<p>程序输出结果:</p>
+
+<pre><code>1. [Loaded Main2 from file:/Users/jiadongy/JVM_Learning_Sample/out/production/JVM_Learning_Sample/]
+2. [Loaded A2 from file:/Users/jiadongy/JVM_Learning_Sample/out/production/JVM_Learning_Sample/]
+3. Class A2 init start
+4. [Loaded B2 from file:/Users/jiadongy/JVM_Learning_Sample/out/production/JVM_Learning_Sample/]
+5. Class B2 init start
+6. Instance A2 init start. a=null a1=0 a.b2=NPE b=null b1=0 b.a2=NPE
+7. Instance A2 init end.     a=null a1=0 a.b2=NPE b=null b1=0 b.a2=NPE
+8. Instance A2 new.         a=null a1=0 a.b2=NPE b=null b1=0 b.a2=NPE
+9. Class B2 init end.            b=A2@61bbe9ba b1=4 b.a2=12 a=null a1=0 a.b2=NPE
+10. Instance B2 init start.       b=A2@61bbe9ba b1=4 b.a2=12 a=null a1=0 a.b2=NPE
+11. Instance B2 init end.        b=A2@61bbe9ba b1=4 b.a2=12 a=null a1=0 a.b2=NPE
+12. Instance B2 new.            b=A2@61bbe9ba b1=4 b.a2=12 a=null a1=0 a.b2=NPE
+13. Class A2 init end.   a=B2@610455d6 a1=2 a.b2=22 b=A2@61bbe9ba b1=4 b.a2=12
+14. A2 a=B2@610455d6
+15. A2 a1=2
+16. A2 a2=12
+17. B2 b=A2@61bbe9ba
+18. B2 b1=4
+19. B2 b2=22
+</code></pre>
+
+<p>把它转化为下面的表格,更加清晰地描述A/B各个阶段执行的过程:</p>
+
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>A类加载完成</td>
+<td></td>
+</tr>
+<tr>
+<td>A类初始化 - 开始</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>B类加载完成</td>
+</tr>
+<tr>
+<td></td>
+<td>B类初始化 - 开始</td>
+</tr>
+<tr>
+<td>A类实例初始化 - 开始</td>
+<td></td>
+</tr>
+<tr>
+<td>A类实例初始化 - 结束</td>
+<td></td>
+</tr>
+<tr>
+<td>A类实例构造函数执行完成</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>B类初始化 - 结束</td>
+</tr>
+<tr>
+<td></td>
+<td>B类实例初始化 - 开始</td>
+</tr>
+<tr>
+<td></td>
+<td>B类实例初始化 - 结束</td>
+</tr>
+<tr>
+<td></td>
+<td>B类实例构造函数执行完成</td>
+</tr>
+<tr>
+<td>A类初始化 - 结束</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<p>可以看到在A类初始化的过程中,A类被实例化了(并且该阶段正常结束了),也就是说<strong>类的初始化阶段并不是原子的/排他的</strong>.在本例中,A类实例化阶段的结束早于其类初始化阶段,A类实例化完成时,A类的静态变量还未被初始化.</p>
+
+<p>Reference.1已经描述了这种情况:</p>
+
+<blockquote>
+<p>加载/验证/准备/初始化和卸载这5个阶段的顺序是确定的,类的加载过程必须按照这种顺序按部就班的开始&hellip;注意,这里笔者写的是按部就班的&quot;开始&quot;,而不是按部就班的&quot;进行&quot;或&quot;完成&quot;,强调这点是因为这些阶段通都是相互交叉混合式进行的,通常会在一个阶段执行的过程中调用/激活另外一个阶段<br/>
+                                                              &lt;&lt;深入理解Java虚拟机&gt;&gt;P210</p>
+</blockquote>
+
+<h2 id="toc_3">总结</h2>
+
+<ol>
+<li>5个阶段的开始是有顺序的,结束则不一定</li>
+<li>阶段不是排他的/临界的</li>
+<li>循环初始化可能引起意料之外的情况,尽量避免
+
+<ul>
+<li>eg.类在初始化过程中修改另一个类的变量,导致另一个类得到了意料之外的初始值</li>
+</ul></li>
+</ol>
+
+<h2 id="toc_4">Reference</h2>
+
+<ol>
+<li><a href="#book#">深入理解Java虚拟机</a></li>
+</ol>
+
+<h3 id="toc_5">场景3代码</h3>
+
+<pre><code class="language-java">class A2 {
+    static {
+        System.out.println(&quot;Class A2 init start&quot;);
+    }
+
+    static B2 a = new B2();
+    static int a1 = 1;
+
+    {
+        System.out.println(&quot;Instance A2 init start. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
+    }
+
+    public int a2 = 11;
+
+    static {
+        a1 = 2;
+        System.out.println(&quot;Class A2 init end. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
+    }
+
+    {
+        a2 = 12;
+        System.out.println(&quot;Instance A2 init end. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
+    }
+
+    public A2() {
+        System.out.println(&quot;Instance A2 new. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
+    }
+}
+
+class B2 {
+    static {
+        System.out.println(&quot;Class B2 init start&quot;);
+    }
+
+    static A2 b = new A2();
+    static int b1 = 3;
+
+    {
+        System.out.println(&quot;Instance B2 init start. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
+    }
+
+    public int b2 = 21;
+
+    static {
+        b1 = 4;
+        System.out.println(&quot;Class B2 init end. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
+    }
+
+    {
+        b2 = 22;
+        System.out.println(&quot;Instance B2 init end. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
+    }
+
+    public B2() {
+        System.out.println(&quot;Instance B2 new. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
+    }
+}
+
+class Main2 {
+    static public void main(String... args) {
+        System.out.println(&quot;A2 a=&quot; + A2.a);
+        System.out.println(&quot;A2 a1=&quot; + A2.a1);
+        System.out.println(&quot;A2 a2=&quot; + B2.b.a2);
+        System.out.println(&quot;B2 b=&quot; + B2.b);
+        System.out.println(&quot;B2 b1=&quot; + B2.b1);
+        System.out.println(&quot;B2 b2=&quot; + A2.a.b2);
+    }
+}
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[About]]></title>
     <link href="https://jiadongy.github.io/about.html"/>
     <updated>2016-10-03T00:05:14+08:00</updated>
@@ -33,7 +279,7 @@
 <a href="#toc_0">Example: 多个类的初始化</a>
 </li>
 <li>
-<a href="#toc_1">类的出生</a>
+<a href="#toc_1">类:从0到1</a>
 <ul>
 <li>
 <a href="#toc_2">类的加载(Loading)</a>
@@ -58,18 +304,21 @@
 </ul>
 </li>
 <li>
-<a href="#toc_8">Example执行过程</a>
-</li>
-<li>
-<a href="#toc_9">类的死亡</a>
+<a href="#toc_8">类:从1到n再到0</a>
 <ul>
+<li>
+<a href="#toc_9">类的使用(Using)</a>
+</li>
 <li>
 <a href="#toc_10">类的卸载(Unloading)</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_11">Reference</a>
+<a href="#toc_11">Example:执行过程简述</a>
+</li>
+<li>
+<a href="#toc_12">Reference</a>
 </li>
 </ul>
 
@@ -87,7 +336,6 @@ class A {
         return a;
     }
 }
-
 class B extends A{
     static int b = 1;
     static {
@@ -105,10 +353,10 @@ class Main {
 }
 </code></pre>
 
-<p>上面的例子中,为了<code>main()</code>函数能够运行,JVM到底要做哪些前置工作呢?<br/>
-不过在此之前,还是先来看看一个简单的例子:如果把行1和行2和行3注释掉呢?JVM做了什么?</p>
+<p>在进入正文前,首先根据上面的例子试图猜测:为了<code>Main</code>类中的<code>main()</code>函数能够运行,JVM需要做哪些前置工作呢?这些工作是以什么顺序展开的呢?<br/>
+为了更好的描述多个类的情形,可以先试图描述一个更简单的例子:把行1和行2和行3注释掉.</p>
 
-<h2 id="toc_1">类的出生</h2>
+<h2 id="toc_1">类:从0到1</h2>
 
 <p>一句话: 把类从介质中复制到JVM方法区,通过各种规则验证和符号解析,最后根据程序员的逻辑赋值或其他语句完成初始化</p>
 
@@ -172,7 +420,25 @@ b = 2;
 System.out.print(&quot;B init&quot;);
 </code></pre>
 
-<h2 id="toc_8">Example执行过程</h2>
+<h2 id="toc_8">类:从1到n再到0</h2>
+
+<h3 id="toc_9">类的使用(Using)</h3>
+
+<p>类的实例化过程,包括<code>new</code>/反射等方法</p>
+
+<h3 id="toc_10">类的卸载(Unloading)</h3>
+
+<p>当程序中无论什么方法都无法引用该类时,类从方法区被回收,大致可以理解为</p>
+
+<ol>
+<li>类的所有实例被回收</li>
+<li>类的ClassLoader被回收</li>
+<li>没有地方引用Class对象,也无法通过反射访问</li>
+</ol>
+
+<h2 id="toc_11">Example:执行过程简述</h2>
+
+<p>回到最初的例子,可以列出预计的执行顺序为:</p>
 
 <ol>
 <li>初始化<code>me.Main</code></li>
@@ -185,22 +451,13 @@ System.out.print(&quot;B init&quot;);
 <li><code>System.out.print(B.b);</code>:输出2</li>
 </ol>
 
-<h2 id="toc_9">类的死亡</h2>
+<p>实际执行结果验证:<br/>
+<img src="media/14749627092309/14758954665895.jpg" alt=""/></p>
 
-<h3 id="toc_10">类的卸载(Unloading)</h3>
-
-<p>当程序中无论什么方法都无法引用该类时,类从方法区被回收,大致可以理解为</p>
-
-<ol>
-<li>类的所有实例被回收</li>
-<li>类的ClassLoader被回收</li>
-<li>没有地方引用Class对象,也无法通过反射访问</li>
-</ol>
-
-<h2 id="toc_11">Reference</h2>
+<h2 id="toc_12">Reference</h2>
 
 <ol>
-<li><a href="#book#">深入理解Java虚拟机</a></li>
+<li><a href="#">深入理解Java虚拟机</a></li>
 </ol>
 
 ]]></content>

@@ -122,7 +122,7 @@
 <a href="#toc_0">Example: 多个类的初始化</a>
 </li>
 <li>
-<a href="#toc_1">类的出生</a>
+<a href="#toc_1">类:从0到1</a>
 <ul>
 <li>
 <a href="#toc_2">类的加载(Loading)</a>
@@ -147,18 +147,21 @@
 </ul>
 </li>
 <li>
-<a href="#toc_8">Example执行过程</a>
-</li>
-<li>
-<a href="#toc_9">类的死亡</a>
+<a href="#toc_8">类:从1到n再到0</a>
 <ul>
+<li>
+<a href="#toc_9">类的使用(Using)</a>
+</li>
 <li>
 <a href="#toc_10">类的卸载(Unloading)</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_11">Reference</a>
+<a href="#toc_11">Example:执行过程简述</a>
+</li>
+<li>
+<a href="#toc_12">Reference</a>
 </li>
 </ul>
 
@@ -176,7 +179,6 @@ class A {
         return a;
     }
 }
-
 class B extends A{
     static int b = 1;
     static {
@@ -194,10 +196,10 @@ class Main {
 }
 </code></pre>
 
-<p>上面的例子中,为了<code>main()</code>函数能够运行,JVM到底要做哪些前置工作呢?<br/>
-不过在此之前,还是先来看看一个简单的例子:如果把行1和行2和行3注释掉呢?JVM做了什么?</p>
+<p>在进入正文前,首先根据上面的例子试图猜测:为了<code>Main</code>类中的<code>main()</code>函数能够运行,JVM需要做哪些前置工作呢?这些工作是以什么顺序展开的呢?<br/>
+为了更好的描述多个类的情形,可以先试图描述一个更简单的例子:把行1和行2和行3注释掉.</p>
 
-<h2 id="toc_1">类的出生</h2>
+<h2 id="toc_1">类:从0到1</h2>
 
 <p>一句话: 把类从介质中复制到JVM方法区,通过各种规则验证和符号解析,最后根据程序员的逻辑赋值或其他语句完成初始化</p>
 
@@ -261,7 +263,25 @@ b = 2;
 System.out.print(&quot;B init&quot;);
 </code></pre>
 
-<h2 id="toc_8">Example执行过程</h2>
+<h2 id="toc_8">类:从1到n再到0</h2>
+
+<h3 id="toc_9">类的使用(Using)</h3>
+
+<p>类的实例化过程,包括<code>new</code>/反射等方法</p>
+
+<h3 id="toc_10">类的卸载(Unloading)</h3>
+
+<p>当程序中无论什么方法都无法引用该类时,类从方法区被回收,大致可以理解为</p>
+
+<ol>
+<li>类的所有实例被回收</li>
+<li>类的ClassLoader被回收</li>
+<li>没有地方引用Class对象,也无法通过反射访问</li>
+</ol>
+
+<h2 id="toc_11">Example:执行过程简述</h2>
+
+<p>回到最初的例子,可以列出预计的执行顺序为:</p>
 
 <ol>
 <li>初始化<code>me.Main</code></li>
@@ -274,22 +294,13 @@ System.out.print(&quot;B init&quot;);
 <li><code>System.out.print(B.b);</code>:输出2</li>
 </ol>
 
-<h2 id="toc_9">类的死亡</h2>
+<p>实际执行结果验证:<br/>
+<img src="media/14749627092309/14758954665895.jpg" alt=""/></p>
 
-<h3 id="toc_10">类的卸载(Unloading)</h3>
-
-<p>当程序中无论什么方法都无法引用该类时,类从方法区被回收,大致可以理解为</p>
-
-<ol>
-<li>类的所有实例被回收</li>
-<li>类的ClassLoader被回收</li>
-<li>没有地方引用Class对象,也无法通过反射访问</li>
-</ol>
-
-<h2 id="toc_11">Reference</h2>
+<h2 id="toc_12">Reference</h2>
 
 <ol>
-<li><a href="#book#">深入理解Java虚拟机</a></li>
+<li><a href="#">深入理解Java虚拟机</a></li>
 </ol>
 
 
@@ -382,6 +393,12 @@ System.out.print(&quot;B init&quot;);
                 <div class="side-content">
                 <ul class="posts-list">
 	      
+		      
+			      <li class="post">
+			        <a href="14759239353726.html">类的循环初始化是否会引起死锁?</a>
+			      </li>
+		     
+		  
 		      
 			      <li class="post">
 			        <a href="about.html">About</a>
