@@ -120,28 +120,27 @@
       <ul>
 <li>
 <a href="#toc_0">场景设计和推测</a>
-</li>
-<li>
-<a href="#toc_1">场景</a>
 <ul>
 <li>
-<a href="#toc_2">执行结果分析</a>
+<a href="#toc_1">场景代码</a>
 </li>
 </ul>
+</li>
+<li>
+<a href="#toc_2">执行结果分析</a>
 </li>
 <li>
 <a href="#toc_3">总结</a>
 </li>
 <li>
 <a href="#toc_4">Reference</a>
-<ul>
-<li>
-<a href="#toc_5">场景代码</a>
-</li>
-</ul>
 </li>
 </ul>
 
+
+<ul>
+<li>前置知识: Java基础 JVM类加载过程</li>
+</ul>
 
 <h2 id="toc_0">场景设计和推测</h2>
 
@@ -152,12 +151,6 @@
 <li>在类A中的初始化中实例化B</li>
 <li>在类B的初始化中实例化A</li>
 </ol></li>
-<li>猜测:死锁</li>
-</ul>
-
-<h2 id="toc_1">场景</h2>
-
-<ul>
 <li>类设计
 
 <ul>
@@ -180,14 +173,86 @@
 <li>打点位置: 
 
 <ol>
-<li>类加载结束点</li>
-<li>类初始化开始点/结束点</li>
-<li>实例初始化开始点/结束点</li>
-<li>构造函数结束点</li>
+<li>类加载结束点(text: Loaded Main2 from file)</li>
+<li>类初始化开始点/结束点(text: Class A2 init)</li>
+<li>实例初始化开始点/结束点(text: Instance A2 init)</li>
+<li>构造函数结束点(text: Instance A2 new)</li>
 </ol></li>
 </ul>
 
-<h3 id="toc_2">执行结果分析</h3>
+<h3 id="toc_1">场景代码</h3>
+
+<pre><code class="language-java">class A2 {
+    static {
+        System.out.println(&quot;Class A2 init start&quot;);
+    }
+
+    static B2 a = new B2();
+    static int a1 = 1;
+
+    {
+        System.out.println(&quot;Instance A2 init start. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
+    }
+
+    public int a2 = 11;
+
+    static {
+        a1 = 2;
+        System.out.println(&quot;Class A2 init end. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
+    }
+
+    {
+        a2 = 12;
+        System.out.println(&quot;Instance A2 init end. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
+    }
+
+    public A2() {
+        System.out.println(&quot;Instance A2 new. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
+    }
+}
+
+class B2 {
+    static {
+        System.out.println(&quot;Class B2 init start&quot;);
+    }
+
+    static A2 b = new A2();
+    static int b1 = 3;
+
+    {
+        System.out.println(&quot;Instance B2 init start. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
+    }
+
+    public int b2 = 21;
+
+    static {
+        b1 = 4;
+        System.out.println(&quot;Class B2 init end. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
+    }
+
+    {
+        b2 = 22;
+        System.out.println(&quot;Instance B2 init end. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
+    }
+
+    public B2() {
+        System.out.println(&quot;Instance B2 new. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
+    }
+}
+
+class Main2 {
+    static public void main(String... args) {
+        System.out.println(&quot;A2 a=&quot; + A2.a);
+        System.out.println(&quot;A2 a1=&quot; + A2.a1);
+        System.out.println(&quot;A2 a2=&quot; + B2.b.a2);
+        System.out.println(&quot;B2 b=&quot; + B2.b);
+        System.out.println(&quot;B2 b1=&quot; + B2.b1);
+        System.out.println(&quot;B2 b2=&quot; + A2.a.b2);
+    }
+}
+</code></pre>
+
+<h2 id="toc_2">执行结果分析</h2>
 
 <p>程序输出结果:</p>
 
@@ -274,12 +339,13 @@
 </tbody>
 </table>
 
-<p>可以看到在A类初始化的过程中,A类被实例化了(并且该阶段正常结束了),也就是说<strong>类的初始化阶段并不是原子的/排他的</strong>.在本例中,A类实例化阶段的结束早于其类初始化阶段,A类实例化完成时,A类的静态变量还未被初始化.</p>
+<p>可以看到在A类初始化的过程中,A类被实例化了(并且该阶段正常结束了),也就是说<strong>类的初始化阶段并不是原子的/排他的</strong>.<br/>
+如在本例中,A类实例化阶段的结束早于其类初始化阶段,A类实例化完成时,A类的静态变量还未被初始化.</p>
 
-<p>Reference.1已经描述了这种情况:</p>
+<p>Reference.1中已经描述了这种情况:</p>
 
 <blockquote>
-<p>加载/验证/准备/初始化和卸载这5个阶段的顺序是确定的,类的加载过程必须按照这种顺序按部就班的开始&hellip;注意,这里笔者写的是按部就班的&quot;开始&quot;,而不是按部就班的&quot;进行&quot;或&quot;完成&quot;,强调这点是因为这些阶段通都是相互交叉混合式进行的,通常会在一个阶段执行的过程中调用/激活另外一个阶段<br/>
+<p><u>加载/验证/准备/初始化和卸载这5个阶段的顺序是确定的</u>,类的加载过程必须按照这种顺序按部就班的开始&hellip;注意,这里笔者写的是按部就班的&quot;开始&quot;,而不是按部就班的&quot;进行&quot;或&quot;完成&quot;,强调这点是因为这些阶段通都是相互交叉混合式进行的,通常会在一个阶段执行的过程中调用/激活另外一个阶段<br/>
                                                               &lt;&lt;深入理解Java虚拟机&gt;&gt;P210</p>
 </blockquote>
 
@@ -302,78 +368,6 @@
 <li><a href="#book#">深入理解Java虚拟机</a></li>
 </ol>
 
-<h3 id="toc_5">场景代码</h3>
-
-<pre><code class="language-java">class A2 {
-    static {
-        System.out.println(&quot;Class A2 init start&quot;);
-    }
-
-    static B2 a = new B2();
-    static int a1 = 1;
-
-    {
-        System.out.println(&quot;Instance A2 init start. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
-    }
-
-    public int a2 = 11;
-
-    static {
-        a1 = 2;
-        System.out.println(&quot;Class A2 init end. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
-    }
-
-    {
-        a2 = 12;
-        System.out.println(&quot;Instance A2 init end. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
-    }
-
-    public A2() {
-        System.out.println(&quot;Instance A2 new. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
-    }
-}
-
-class B2 {
-    static {
-        System.out.println(&quot;Class B2 init start&quot;);
-    }
-
-    static A2 b = new A2();
-    static int b1 = 3;
-
-    {
-        System.out.println(&quot;Instance B2 init start. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
-    }
-
-    public int b2 = 21;
-
-    static {
-        b1 = 4;
-        System.out.println(&quot;Class B2 init end. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
-    }
-
-    {
-        b2 = 22;
-        System.out.println(&quot;Instance B2 init end. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
-    }
-
-    public B2() {
-        System.out.println(&quot;Instance B2 new. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
-    }
-}
-
-class Main2 {
-    static public void main(String... args) {
-        System.out.println(&quot;A2 a=&quot; + A2.a);
-        System.out.println(&quot;A2 a1=&quot; + A2.a1);
-        System.out.println(&quot;A2 a2=&quot; + B2.b.a2);
-        System.out.println(&quot;B2 b=&quot; + B2.b);
-        System.out.println(&quot;B2 b1=&quot; + B2.b1);
-        System.out.println(&quot;B2 b2=&quot; + A2.a.b2);
-    }
-}
-</code></pre>
-
 
 
 
@@ -382,6 +376,9 @@ class Main2 {
       <div class="row">
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14759792065993.html"
+          title="Previous Post: 集合实现类综述(java.util)">&laquo; 集合实现类综述(java.util)</a>
       
         </p>
         </div>
@@ -464,6 +461,12 @@ class Main2 {
                 <div class="side-content">
                 <ul class="posts-list">
 	      
+		      
+			      <li class="post">
+			        <a href="14759792065993.html">集合实现类综述(java.util)</a>
+			      </li>
+		     
+		  
 		      
 			      <li class="post">
 			        <a href="14759239353726.html">类的循环初始化是否会引起死锁?</a>

@@ -4,13 +4,619 @@
   <title><![CDATA[J'Collection]]></title>
   <link href="https://jiadongy.github.io/atom.xml" rel="self"/>
   <link href="https://jiadongy.github.io/"/>
-  <updated>2016-10-08T20:29:07+08:00</updated>
+  <updated>2016-10-09T17:08:02+08:00</updated>
   <id>https://jiadongy.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[集合实现类综述(java.util)]]></title>
+    <link href="https://jiadongy.github.io/14759792065993.html"/>
+    <updated>2016-10-09T10:13:26+08:00</updated>
+    <id>https://jiadongy.github.io/14759792065993.html</id>
+    <content type="html"><![CDATA[
+<ul>
+<li>
+<a href="#toc_0">Map(字典)</a>
+<ul>
+<li>
+<a href="#toc_1">HashMap/LinkedHashMap/TreeMap特性比较</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_2">Set(集合)</a>
+<ul>
+<li>
+<a href="#toc_3">HashSet/LinkedHashSet/TreeSet特性比较</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">List(列表)</a>
+<ul>
+<li>
+<a href="#toc_5">ArrayList/LinkedList/Vector特性比较</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_6">Queue/Deque(队列/双端队列)</a>
+<ul>
+<li>
+<a href="#toc_7">LinkedList/PriorityQueue/ArrayDeque特性比较</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_8">Reference</a>
+</li>
+</ul>
+
+
+<ul>
+<li>前置知识: Java基础 集合类基础(jdk1.8)</li>
+</ul>
+
+<h2 id="toc_0">Map(字典)</h2>
+
+<p>该接口<em>不</em>基于<code>Collection</code></p>
+
+<h3 id="toc_1">HashMap/LinkedHashMap/TreeMap特性比较</h3>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>HashMap</th>
+<th>LinkedHashMap</th>
+<th>TreeMap</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>继承</td>
+<td>父接口</td>
+<td>Map</td>
+<td>Map</td>
+<td>NavigableMap<sup id="fnref1"><a href="#fn1" rel="footnote">1</a></sup></td>
+</tr>
+<tr>
+<td></td>
+<td>父类</td>
+<td>AbstractMap</td>
+<td>HashMap</td>
+<td>AbstractMap</td>
+</tr>
+<tr>
+<td>数据存储</td>
+<td>底层结构</td>
+<td>数组+(链表/红黑树)</td>
+<td>同HashMap+双向链表</td>
+<td>红黑树</td>
+</tr>
+<tr>
+<td>复杂度</td>
+<td>插入</td>
+<td>O(1)</td>
+<td>同HashMap</td>
+<td>O(lgN)</td>
+</tr>
+<tr>
+<td></td>
+<td>删除</td>
+<td>O(1)</td>
+<td>同HashMap</td>
+<td>O(lgN)</td>
+</tr>
+<tr>
+<td></td>
+<td>查找</td>
+<td>O(1)</td>
+<td>同HashMap</td>
+<td>O(lgN)</td>
+</tr>
+<tr>
+<td>有序性</td>
+<td>迭代顺序</td>
+<td>/</td>
+<td><u>插入顺序/访问顺序</u></td>
+<td><u>自然序/自定义</u></td>
+</tr>
+<tr>
+<td></td>
+<td>支持Navigate</td>
+<td>否</td>
+<td>同HashMap</td>
+<td>是</td>
+</tr>
+<tr>
+<td>哈希</td>
+<td>哈希函数</td>
+<td>基于HashCode()高/低位<sup id="fnref2"><a href="#fn2" rel="footnote">2</a></sup></td>
+<td>同HashMap</td>
+<td>/</td>
+</tr>
+<tr>
+<td></td>
+<td>桶定位法</td>
+<td>位运算<sup id="fnref3"><a href="#fn3" rel="footnote">3</a></sup></td>
+<td>同HashMap</td>
+<td>/</td>
+</tr>
+<tr>
+<td></td>
+<td>冲突处理</td>
+<td>转换成链表/红黑树<sup id="fnref4"><a href="#fn4" rel="footnote">4</a></sup></td>
+<td>同HashMap</td>
+<td>/</td>
+</tr>
+<tr>
+<td>扩容机制</td>
+<td>初始容量</td>
+<td>16<sup id="fnref3"><a href="#fn3" rel="footnote">3</a></sup></td>
+<td>同HashMap</td>
+<td>/</td>
+</tr>
+<tr>
+<td></td>
+<td>最大容量</td>
+<td>1 &lt;&lt; 30(2<sup>31</sup> )</td>
+<td>同HashMap</td>
+<td>/</td>
+</tr>
+<tr>
+<td></td>
+<td>负载因子</td>
+<td>0.75<sup id="fnref5"><a href="#fn5" rel="footnote">5</a></sup></td>
+<td>同HashMap</td>
+<td>/</td>
+</tr>
+<tr>
+<td></td>
+<td>扩容策略</td>
+<td>2倍<sup id="fnref3"><a href="#fn3" rel="footnote">3</a></sup></td>
+<td>同HashMap</td>
+<td>/</td>
+</tr>
+<tr>
+<td></td>
+<td>扩容时机</td>
+<td>插入后<sup id="fnref6"><a href="#fn6" rel="footnote">6</a></sup></td>
+<td>同HashMap</td>
+<td>/</td>
+</tr>
+<tr>
+<td></td>
+<td>具体操作</td>
+<td>在新数组中重排所有元素</td>
+<td>同HashMap</td>
+<td>/</td>
+</tr>
+<tr>
+<td></td>
+<td>保持迭代顺序</td>
+<td>否<sup id="fnref7"><a href="#fn7" rel="footnote">7</a></sup></td>
+<td>同HashMap</td>
+<td>/</td>
+</tr>
+<tr>
+<td>序列化</td>
+<td>典型优化</td>
+<td>跳过数组null位置</td>
+<td>同HashMap<sup id="fnref8"><a href="#fn8" rel="footnote">8</a></sup></td>
+<td>/</td>
+</tr>
+<tr>
+<td></td>
+<td>transient<sup id="fnref9"><a href="#fn9" rel="footnote">9</a></sup></td>
+<td>size/modCount<sup id="fnref10"><a href="#fn10" rel="footnote">10</a></sup>; table/entrySet;</td>
+<td>同HashMap; head/tail<sup id="fnref8"><a href="#fn8" rel="footnote">8</a></sup>;</td>
+<td>size/modCount; root<sup id="fnref11"><a href="#fn11" rel="footnote">11</a></sup>;</td>
+</tr>
+<tr>
+<td>同步</td>
+<td>线程安全</td>
+<td>否</td>
+<td>同HashMap</td>
+<td>否</td>
+</tr>
+<tr>
+<td></td>
+<td>final</td>
+<td>Entry.hash/key</td>
+<td>同HashMap</td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="toc_2">Set(集合)</h2>
+
+<p>该接口基于<code>Collection</code></p>
+
+<h3 id="toc_3">HashSet/LinkedHashSet/TreeSet特性比较</h3>
+
+<p>Set实现内部使用了Map实现,所以其特性和Map对应项类似</p>
+
+<h2 id="toc_4">List(列表)</h2>
+
+<p>该接口基于<code>Collection</code></p>
+
+<h3 id="toc_5">ArrayList/LinkedList/Vector特性比较</h3>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>ArrayList</th>
+<th>LinkedList</th>
+<th>Vector</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>继承</td>
+<td>父接口</td>
+<td>List/RandonAccess</td>
+<td>List/Deque</td>
+<td>List/RandonAccess</td>
+</tr>
+<tr>
+<td></td>
+<td>父类</td>
+<td>AbstractList</td>
+<td>AbstractSequentialList</td>
+<td>AbstractList</td>
+</tr>
+<tr>
+<td>数据存储</td>
+<td>底层结构</td>
+<td>数组</td>
+<td>双向链表<sup id="fnref12"><a href="#fn12" rel="footnote">12</a></sup></td>
+<td>数组</td>
+</tr>
+<tr>
+<td>复杂度</td>
+<td>插入</td>
+<td>O(N)</td>
+<td>O(1)</td>
+<td>O(N)</td>
+</tr>
+<tr>
+<td></td>
+<td>删除</td>
+<td>O(N)</td>
+<td>O(1)</td>
+<td>O(N)</td>
+</tr>
+<tr>
+<td></td>
+<td>查询</td>
+<td>O(1)</td>
+<td>O(N)</td>
+<td>O(1)</td>
+</tr>
+<tr>
+<td>容量</td>
+<td>初始容量</td>
+<td>10</td>
+<td>0</td>
+<td>10</td>
+</tr>
+<tr>
+<td></td>
+<td>最大容量</td>
+<td>Integer.Max</td>
+<td>Integer.Max</td>
+<td>Integer.Max</td>
+</tr>
+<tr>
+<td>扩容</td>
+<td>时间点</td>
+<td>插入前</td>
+<td>/</td>
+<td>插入前</td>
+</tr>
+<tr>
+<td></td>
+<td>策略</td>
+<td>1.5倍</td>
+<td>/</td>
+<td>默认为2倍</td>
+</tr>
+<tr>
+<td></td>
+<td>主要耗时点</td>
+<td>拷贝数组<sup id="fnref13"><a href="#fn13" rel="footnote">13</a></sup></td>
+<td>/</td>
+<td>拷贝数组</td>
+</tr>
+<tr>
+<td>同步</td>
+<td>线程安全</td>
+<td>无</td>
+<td>无</td>
+<td>是(<code>synchronized</code>)</td>
+</tr>
+<tr>
+<td>序列化</td>
+<td>优化策略</td>
+<td>跳过数组空白的尾部</td>
+<td>/</td>
+<td>无</td>
+</tr>
+<tr>
+<td></td>
+<td>transient</td>
+<td>elementData;</td>
+<td>size; first/last;</td>
+<td>无<sup id="fnref14"><a href="#fn14" rel="footnote">14</a></sup></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="toc_6">Queue/Deque(队列/双端队列)</h2>
+
+<p>该接口基于<code>Collection</code></p>
+
+<h3 id="toc_7">LinkedList/PriorityQueue/ArrayDeque特性比较</h3>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>LinkedList</th>
+<th>PriorityQueue</th>
+<th>ArrayDeque</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>继承</td>
+<td>父接口</td>
+<td>List/Deque</td>
+<td>Queue</td>
+<td>Deque</td>
+</tr>
+<tr>
+<td></td>
+<td>父类</td>
+<td>AbstractSequentialList</td>
+<td>AbstractQueue</td>
+<td>AbstractCollection</td>
+</tr>
+<tr>
+<td>数据存储</td>
+<td>数据结构</td>
+<td>列表/双端队列</td>
+<td>优先队列</td>
+<td>双端队列</td>
+</tr>
+<tr>
+<td></td>
+<td>底层结构</td>
+<td>双向链表</td>
+<td>最小堆/最大堆<sup id="fnref15"><a href="#fn15" rel="footnote">15</a></sup>(数组)</td>
+<td>循环数组</td>
+</tr>
+<tr>
+<td>Usage</td>
+<td>插入null元素</td>
+<td>支持</td>
+<td>不支持<sup id="fnref16"><a href="#fn16" rel="footnote">16</a></sup></td>
+<td>不支持<sup id="fnref17"><a href="#fn17" rel="footnote">17</a></sup></td>
+</tr>
+<tr>
+<td>有序性</td>
+<td>出队有序性</td>
+<td>/</td>
+<td><u>自然序/自定义</u></td>
+<td>/</td>
+</tr>
+<tr>
+<td></td>
+<td>迭代有序性</td>
+<td>/</td>
+<td>无</td>
+<td>/</td>
+</tr>
+<tr>
+<td>复杂度</td>
+<td>插入</td>
+<td>O(1)</td>
+<td>O(lgN)</td>
+<td>O(N)</td>
+</tr>
+<tr>
+<td></td>
+<td>删除</td>
+<td>O(1)</td>
+<td>O(lgN)</td>
+<td>O(N)</td>
+</tr>
+<tr>
+<td></td>
+<td>查询</td>
+<td>O(N)</td>
+<td>O(lgN)</td>
+<td>O(1)</td>
+</tr>
+<tr>
+<td></td>
+<td>入队</td>
+<td>O(1)</td>
+<td>O(lgN)</td>
+<td>O(1)</td>
+</tr>
+<tr>
+<td></td>
+<td>出队</td>
+<td>O(1)</td>
+<td>O(lgN)</td>
+<td>O(1)</td>
+</tr>
+<tr>
+<td>扩容</td>
+<td>初始容量</td>
+<td>/</td>
+<td>11(1+2+4+4)</td>
+<td>8</td>
+</tr>
+<tr>
+<td></td>
+<td>最小容量</td>
+<td>/</td>
+<td>2<sup id="fnref18"><a href="#fn18" rel="footnote">18</a></sup></td>
+<td>8</td>
+</tr>
+<tr>
+<td></td>
+<td>时间点</td>
+<td>/</td>
+<td>插入前</td>
+<td>插入后</td>
+</tr>
+<tr>
+<td></td>
+<td>判断条件</td>
+<td>/</td>
+<td>index &gt;= queue.length</td>
+<td>head==tail</td>
+</tr>
+<tr>
+<td></td>
+<td>策略</td>
+<td>/</td>
+<td>新容量&lt;=64为2倍,否则为1.5倍</td>
+<td>2倍</td>
+</tr>
+<tr>
+<td>序列化</td>
+<td>优化策略</td>
+<td>/</td>
+<td>删除空白位置,但size不小于2</td>
+<td>删除空白位置</td>
+</tr>
+<tr>
+<td></td>
+<td>transient</td>
+<td>size; first/last;</td>
+<td>queue; modCount;</td>
+<td>elements; head/tail;</td>
+</tr>
+<tr>
+<td>同步</td>
+<td>线程安全</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="toc_8">Reference</h2>
+
+<ol>
+<li><a href="http://tech.meituan.com/java-hashmap.html">Java 8系列之重新认识HashMap</a></li>
+<li><a href="http://www.jianshu.com/p/138ccbc75803">深入理解哈希表</a></li>
+<li><a href="http://gold.xitu.io/entry/57c3bb096be3ff00583f641f">Java 核心技术点之集合框架</a></li>
+<li><a href="http://uule.iteye.com/blog/1522291">LinkedHashMap</a></li>
+<li><a href="http://wiki.jikexueyuan.com/project/java-enhancement/java-thirtytwo.html">List 总结</a></li>
+<li><a href="http://www.cnblogs.com/leesf456/p/5309809.html">【集合框架】JDK1.8源码分析HashSet &amp;&amp; LinkedHashSet（八）</a></li>
+<li><a href="http://blog.csdn.net/congduan/article/details/45178337">JDK中优先级队列PriorityQueue实现分析</a></li>
+</ol>
+
+<div class="footnotes">
+<hr/>
+<ol>
+
+<li id="fn1">
+<p>通过<code>NavigableMap</code>(扩展自<code>SortedMap</code>)接口,程序可以通过<code>Entry</code>之间的大小顺序,访问某个<code>Entry</code>相邻的<code>Entry</code>&nbsp;<a href="#fnref1" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn2">
+<p>一共两次哈希:第一次:Object.hashCode()返回32位整数;地二次:对第一次哈希值的低位和高位做乘方运算,保证所有数字都参与计算,防止Hash聚集现象&nbsp;<a href="#fnref2" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn3">
+<p>定位元素位于哪个bucket中一般使用求模运算<code>index = hash % length</code>,HashMap中使用较之更快的等效位运算<code>index = hash &amp; (length - 1)</code>,条件是数组length必须满足2<sup>n</sup> .受影响参数包括初始容量/最大容量/扩容策略.使用位运算的代价是:如果length为素数,HashMap不容易产生Hash冲突,但这是一个trade-off&nbsp;<a href="#fnref3" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn4">
+<p>since jdk1.8,当元素过于集中在一个bucket时,由链表转成红黑树;反之由红黑树转成链表&nbsp;<a href="#fnref4" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn5">
+<p><code>loadFactor&gt;0</code>即可;负载因子越大,同样内存HashMap能容纳元素越多,Hash冲突可能性越大,各个操作的复杂度越大&nbsp;<a href="#fnref5" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn6">
+<p>插入后检测扩容比插入前要差,无法避免无谓的扩容(即之后不在put元素的场景)&nbsp;<a href="#fnref6" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn7">
+<p>由于resize后各个元素的hash值可能发生变化,所以无法保证迭代器遍历的顺序,主要体现在在原数组中靠前的元素在新数组中靠后,而且如果假设hash函数是平均分布的话,该种情况出现的概率为50%(eg.元素hash=31,old_array.length=16,new_array.length=32,元素位置从15变成31).有趣的是,jdk1.8的HashMap利用了这种现象来降低resize时重新计算元素位置的开销&nbsp;<a href="#fnref7" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn8">
+<p><code>head</code>/<code>tail</code>为双向链表的头结点和尾节点,由于使用其父类的序列化方法,因此反序列之后需要重新生成双向链表,这是在新建节点的<code>newNode()</code>中实现的;访问/插入/删除方法中对双向链表的操作会通过Override父类的Hook方法实现&nbsp;<a href="#fnref8" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn9">
+<p><code>transient</code>修饰的变量不会被Java默认的序列化器处理,需要程序自己Overload<code>writeObject()</code>和<code>readObject()</code>方法&nbsp;<a href="#fnref9" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn10">
+<p><code>modCount</code>记录结构变化的次数(eg.插入新元素/删除老元素)&nbsp;<a href="#fnref10" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn11">
+<p>红黑树的根节点&nbsp;<a href="#fnref11" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn12">
+<p>讲道理是可以用单向链表的,但是由于该类被官方推荐来模拟Stack/Queue/Deque,因此使用了双向链表,该类能够毫不费力的兼容这些数据结构&nbsp;<a href="#fnref12" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn13">
+<p>执行拷贝数组的方法是<code>Arrays.copy()</code>,底层native方法是<code>arraycopy()</code>,对数组元素的拷贝都是浅拷贝.可以用简单的实验表明:当原数组的元素数量超过10<sup>6</sup> 时,耗时超过1ms;当原数组元素数量超过10<sup>7</sup> 时,耗时超过5ms&nbsp;<a href="#fnref13" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn14">
+<p>由于历史原因<code>Vector</code>(since jdk1.0)没有对序列化做优化,数组尾部的空白片段依然会被保留,官方也推荐使用更新的集合类(since jdk1.2)来代替它&nbsp;<a href="#fnref14" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn15">
+<p>默认是二叉最小堆(默认的<code>comparator</code>来自于<code>SortedSet</code>)&nbsp;<a href="#fnref15" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn16">
+<p>null元素是被删除的元素留下的空位置/还没有添加元素的空位置,是个重要的<code>remove()</code>判断条件,所以不能插入null元素&nbsp;<a href="#fnref16" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn17">
+<p>原因类似<code>PriorityQueue</code>,循环数组中中间有一段是null的,null是数组中的空位置&nbsp;<a href="#fnref17" rev="footnote">&#8617;</a></p>
+</li>
+
+<li id="fn18">
+<p>该最小容量是由序列化<code>writeObject()</code>方法保证,保证树二叉堆至少有两层&nbsp;<a href="#fnref18" rev="footnote">&#8617;</a></p>
+</li>
+
+</ol>
+</div>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[类的循环初始化是否会引起死锁?]]></title>
@@ -21,28 +627,27 @@
 <ul>
 <li>
 <a href="#toc_0">场景设计和推测</a>
-</li>
-<li>
-<a href="#toc_1">场景</a>
 <ul>
 <li>
-<a href="#toc_2">执行结果分析</a>
+<a href="#toc_1">场景代码</a>
 </li>
 </ul>
+</li>
+<li>
+<a href="#toc_2">执行结果分析</a>
 </li>
 <li>
 <a href="#toc_3">总结</a>
 </li>
 <li>
 <a href="#toc_4">Reference</a>
-<ul>
-<li>
-<a href="#toc_5">场景代码</a>
-</li>
-</ul>
 </li>
 </ul>
 
+
+<ul>
+<li>前置知识: Java基础 JVM类加载过程</li>
+</ul>
 
 <h2 id="toc_0">场景设计和推测</h2>
 
@@ -53,12 +658,6 @@
 <li>在类A中的初始化中实例化B</li>
 <li>在类B的初始化中实例化A</li>
 </ol></li>
-<li>猜测:死锁</li>
-</ul>
-
-<h2 id="toc_1">场景</h2>
-
-<ul>
 <li>类设计
 
 <ul>
@@ -81,14 +680,86 @@
 <li>打点位置: 
 
 <ol>
-<li>类加载结束点</li>
-<li>类初始化开始点/结束点</li>
-<li>实例初始化开始点/结束点</li>
-<li>构造函数结束点</li>
+<li>类加载结束点(text: Loaded Main2 from file)</li>
+<li>类初始化开始点/结束点(text: Class A2 init)</li>
+<li>实例初始化开始点/结束点(text: Instance A2 init)</li>
+<li>构造函数结束点(text: Instance A2 new)</li>
 </ol></li>
 </ul>
 
-<h3 id="toc_2">执行结果分析</h3>
+<h3 id="toc_1">场景代码</h3>
+
+<pre><code class="language-java">class A2 {
+    static {
+        System.out.println(&quot;Class A2 init start&quot;);
+    }
+
+    static B2 a = new B2();
+    static int a1 = 1;
+
+    {
+        System.out.println(&quot;Instance A2 init start. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
+    }
+
+    public int a2 = 11;
+
+    static {
+        a1 = 2;
+        System.out.println(&quot;Class A2 init end. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
+    }
+
+    {
+        a2 = 12;
+        System.out.println(&quot;Instance A2 init end. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
+    }
+
+    public A2() {
+        System.out.println(&quot;Instance A2 new. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
+    }
+}
+
+class B2 {
+    static {
+        System.out.println(&quot;Class B2 init start&quot;);
+    }
+
+    static A2 b = new A2();
+    static int b1 = 3;
+
+    {
+        System.out.println(&quot;Instance B2 init start. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
+    }
+
+    public int b2 = 21;
+
+    static {
+        b1 = 4;
+        System.out.println(&quot;Class B2 init end. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
+    }
+
+    {
+        b2 = 22;
+        System.out.println(&quot;Instance B2 init end. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
+    }
+
+    public B2() {
+        System.out.println(&quot;Instance B2 new. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
+    }
+}
+
+class Main2 {
+    static public void main(String... args) {
+        System.out.println(&quot;A2 a=&quot; + A2.a);
+        System.out.println(&quot;A2 a1=&quot; + A2.a1);
+        System.out.println(&quot;A2 a2=&quot; + B2.b.a2);
+        System.out.println(&quot;B2 b=&quot; + B2.b);
+        System.out.println(&quot;B2 b1=&quot; + B2.b1);
+        System.out.println(&quot;B2 b2=&quot; + A2.a.b2);
+    }
+}
+</code></pre>
+
+<h2 id="toc_2">执行结果分析</h2>
 
 <p>程序输出结果:</p>
 
@@ -175,12 +846,13 @@
 </tbody>
 </table>
 
-<p>可以看到在A类初始化的过程中,A类被实例化了(并且该阶段正常结束了),也就是说<strong>类的初始化阶段并不是原子的/排他的</strong>.在本例中,A类实例化阶段的结束早于其类初始化阶段,A类实例化完成时,A类的静态变量还未被初始化.</p>
+<p>可以看到在A类初始化的过程中,A类被实例化了(并且该阶段正常结束了),也就是说<strong>类的初始化阶段并不是原子的/排他的</strong>.<br/>
+如在本例中,A类实例化阶段的结束早于其类初始化阶段,A类实例化完成时,A类的静态变量还未被初始化.</p>
 
-<p>Reference.1已经描述了这种情况:</p>
+<p>Reference.1中已经描述了这种情况:</p>
 
 <blockquote>
-<p>加载/验证/准备/初始化和卸载这5个阶段的顺序是确定的,类的加载过程必须按照这种顺序按部就班的开始&hellip;注意,这里笔者写的是按部就班的&quot;开始&quot;,而不是按部就班的&quot;进行&quot;或&quot;完成&quot;,强调这点是因为这些阶段通都是相互交叉混合式进行的,通常会在一个阶段执行的过程中调用/激活另外一个阶段<br/>
+<p><u>加载/验证/准备/初始化和卸载这5个阶段的顺序是确定的</u>,类的加载过程必须按照这种顺序按部就班的开始&hellip;注意,这里笔者写的是按部就班的&quot;开始&quot;,而不是按部就班的&quot;进行&quot;或&quot;完成&quot;,强调这点是因为这些阶段通都是相互交叉混合式进行的,通常会在一个阶段执行的过程中调用/激活另外一个阶段<br/>
                                                               &lt;&lt;深入理解Java虚拟机&gt;&gt;P210</p>
 </blockquote>
 
@@ -202,78 +874,6 @@
 <ol>
 <li><a href="#book#">深入理解Java虚拟机</a></li>
 </ol>
-
-<h3 id="toc_5">场景代码</h3>
-
-<pre><code class="language-java">class A2 {
-    static {
-        System.out.println(&quot;Class A2 init start&quot;);
-    }
-
-    static B2 a = new B2();
-    static int a1 = 1;
-
-    {
-        System.out.println(&quot;Instance A2 init start. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
-    }
-
-    public int a2 = 11;
-
-    static {
-        a1 = 2;
-        System.out.println(&quot;Class A2 init end. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
-    }
-
-    {
-        a2 = 12;
-        System.out.println(&quot;Instance A2 init end. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
-    }
-
-    public A2() {
-        System.out.println(&quot;Instance A2 new. \ta=&quot; + a + &quot; \ta1=&quot; + a1 + &quot; \ta.b2=&quot; + (a == null ? &quot;NPE&quot; : a.b2) + &quot; \tb=&quot; + B2.b + &quot; \tb1=&quot; + B2.b1 + &quot; \tb.a2=&quot; + (B2.b == null ? &quot;NPE&quot; : B2.b.a2));
-    }
-}
-
-class B2 {
-    static {
-        System.out.println(&quot;Class B2 init start&quot;);
-    }
-
-    static A2 b = new A2();
-    static int b1 = 3;
-
-    {
-        System.out.println(&quot;Instance B2 init start. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
-    }
-
-    public int b2 = 21;
-
-    static {
-        b1 = 4;
-        System.out.println(&quot;Class B2 init end. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
-    }
-
-    {
-        b2 = 22;
-        System.out.println(&quot;Instance B2 init end. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
-    }
-
-    public B2() {
-        System.out.println(&quot;Instance B2 new. \tb=&quot; + b + &quot; \tb1=&quot; + b1 + &quot; \tb.a2=&quot; + (b == null ? &quot;NPE&quot; : b.a2) + &quot; \ta=&quot; + A2.a + &quot; \ta1=&quot; + A2.a1 + &quot; \ta.b2=&quot; + (A2.a == null ? &quot;NPE&quot; : A2.a.b2));
-    }
-}
-
-class Main2 {
-    static public void main(String... args) {
-        System.out.println(&quot;A2 a=&quot; + A2.a);
-        System.out.println(&quot;A2 a1=&quot; + A2.a1);
-        System.out.println(&quot;A2 a2=&quot; + B2.b.a2);
-        System.out.println(&quot;B2 b=&quot; + B2.b);
-        System.out.println(&quot;B2 b1=&quot; + B2.b1);
-        System.out.println(&quot;B2 b2=&quot; + A2.a.b2);
-    }
-}
-</code></pre>
 
 ]]></content>
   </entry>
@@ -344,6 +944,8 @@ with Code Farming</p>
 </li>
 </ul>
 
+
+<p>*前置知识: Java基础</p>
 
 <h2 id="toc_0">Example: 多个类的初始化</h2>
 
