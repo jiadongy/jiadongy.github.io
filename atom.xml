@@ -4,7 +4,7 @@
   <title><![CDATA[J'Collection]]></title>
   <link href="https://jiadongy.github.io/atom.xml" rel="self"/>
   <link href="https://jiadongy.github.io/"/>
-  <updated>2016-10-09T17:08:02+08:00</updated>
+  <updated>2016-10-13T20:11:04+08:00</updated>
   <id>https://jiadongy.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -13,7 +13,7 @@
   <generator uri="http://www.mweb.im/">MWeb</generator>
   
   <entry>
-    <title type="html"><![CDATA[集合实现类综述(java.util)]]></title>
+    <title type="html"><![CDATA[Java集合类综述(in java.util)]]></title>
     <link href="https://jiadongy.github.io/14759792065993.html"/>
     <updated>2016-10-09T10:13:26+08:00</updated>
     <id>https://jiadongy.github.io/14759792065993.html</id>
@@ -23,7 +23,7 @@
 <a href="#toc_0">Map(字典)</a>
 <ul>
 <li>
-<a href="#toc_1">HashMap/LinkedHashMap/TreeMap特性比较</a>
+<a href="#toc_1">HashMap/LinkedHashMap/TreeMap比较</a>
 </li>
 </ul>
 </li>
@@ -31,7 +31,7 @@
 <a href="#toc_2">Set(集合)</a>
 <ul>
 <li>
-<a href="#toc_3">HashSet/LinkedHashSet/TreeSet特性比较</a>
+<a href="#toc_3">HashSet/LinkedHashSet/TreeSet比较</a>
 </li>
 </ul>
 </li>
@@ -39,7 +39,7 @@
 <a href="#toc_4">List(列表)</a>
 <ul>
 <li>
-<a href="#toc_5">ArrayList/LinkedList/Vector特性比较</a>
+<a href="#toc_5">ArrayList/LinkedList/Vector比较</a>
 </li>
 </ul>
 </li>
@@ -47,7 +47,7 @@
 <a href="#toc_6">Queue/Deque(队列/双端队列)</a>
 <ul>
 <li>
-<a href="#toc_7">LinkedList/PriorityQueue/ArrayDeque特性比较</a>
+<a href="#toc_7">LinkedList/PriorityQueue/ArrayDeque比较</a>
 </li>
 </ul>
 </li>
@@ -65,7 +65,7 @@
 
 <p>该接口<em>不</em>基于<code>Collection</code></p>
 
-<h3 id="toc_1">HashMap/LinkedHashMap/TreeMap特性比较</h3>
+<h3 id="toc_1">HashMap/LinkedHashMap/TreeMap比较</h3>
 
 <table>
 <thead>
@@ -240,7 +240,7 @@
 
 <p>该接口基于<code>Collection</code></p>
 
-<h3 id="toc_3">HashSet/LinkedHashSet/TreeSet特性比较</h3>
+<h3 id="toc_3">HashSet/LinkedHashSet/TreeSet比较</h3>
 
 <p>Set实现内部使用了Map实现,所以其特性和Map对应项类似</p>
 
@@ -248,7 +248,7 @@
 
 <p>该接口基于<code>Collection</code></p>
 
-<h3 id="toc_5">ArrayList/LinkedList/Vector特性比较</h3>
+<h3 id="toc_5">ArrayList/LinkedList/Vector比较</h3>
 
 <table>
 <thead>
@@ -367,7 +367,7 @@
 
 <p>该接口基于<code>Collection</code></p>
 
-<h3 id="toc_7">LinkedList/PriorityQueue/ArrayDeque特性比较</h3>
+<h3 id="toc_7">LinkedList/PriorityQueue/ArrayDeque比较</h3>
 
 <table>
 <thead>
