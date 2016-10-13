@@ -4,7 +4,7 @@
   <title><![CDATA[J'Collection]]></title>
   <link href="https://jiadongy.github.io/atom.xml" rel="self"/>
   <link href="https://jiadongy.github.io/"/>
-  <updated>2016-10-13T20:16:33+08:00</updated>
+  <updated>2016-10-13T20:18:03+08:00</updated>
   <id>https://jiadongy.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -945,7 +945,9 @@ with Code Farming</p>
 </ul>
 
 
-<p>*前置知识: Java基础</p>
+<ul>
+<li>前置知识: Java基础</li>
+</ul>
 
 <h2 id="toc_0">Example: 多个类的初始化</h2>
 
